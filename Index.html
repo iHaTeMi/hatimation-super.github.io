@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Social | حساباتي</title>
+    <!-- خط Cairo للعربية و Poppins للإنجليزي -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* زر تغيير اللغة */
+        .lang-switch {
+            position: absolute;
+            top: -10px;
+            left: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #38bdf8;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        html[dir="lang-en"] .lang-switch, html[dir="ltr"] .lang-switch {
+            left: auto;
+            right: 0;
+        }
+
+        .lang-switch:hover {
+            background: rgba(56, 189, 248, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* صورة الملف الشخصي */
+        .profile {
+            margin-top: 40px;
+            margin-bottom: 25px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .profile-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid #38bdf8;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+            object-fit: cover;
+            margin-bottom: 15px;
+            transition: transform 0.4s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.08) rotate(3deg);
+        }
+
+        .profile h1 {
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .profile p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        /* زر فتح القوائم */
+        .toggle-btn {
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-family: inherit;
+        }
+
+        .toggle-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+        }
+
+        .toggle-btn i {
+            transition: transform 0.4s ease;
+        }
+
+        /* حاوية القائمة وأنيميشن الفتح */
+        .links-container {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .links-container.active {
+            max-height: 800px;
+            opacity: 1;
+            padding-top: 5px;
+        }
+
+        /* بطاقات الحسابات */
+        .link-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 20px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        /* أنيميشن التتابع للبطاقات */
+        .links-container.active .link-card {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .links-container.active .link-card:nth-child(1) { transition-delay: 0.1s; }
+        .links-container.active .link-card:nth-child(2) { transition-delay: 0.2s; }
+        .links-container.active .link-card:nth-child(3) { transition-delay: 0.3s; }
+        .links-container.active .link-card:nth-child(4) { transition-delay: 0.4s; }
+
+        .link-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.02) !important;
+            border-color: rgba(56, 189, 248, 0.5);
+        }
+
+        .link-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .link-info i {
+            font-size: 1.5rem;
+        }
+
+        /* ألوان الأيقونات */
+        .youtube i.fa-youtube { color: #ff0000; }
+        .tiktok i.fa-tiktok { color: #00f2fe; }
+        .instagram i.fa-instagram { color: #e1306c; }
+        .discord i.fa-discord { color: #5865f2; }
+
+        /* سهم التوجه داخل البطاقة */
+        .arrow-link {
+            transition: transform 0.3s ease;
+        }
+        
+        /* في الإنجليزي السهم ينعكس */
+        html[dir="ltr"] .arrow-link {
+            transform: rotate(180deg);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- زر التبديل بين العربي والإنجليزي -->
+        <button class="lang-switch" id="langBtn">
+            <i class="fa-solid fa-globe"></i>
+            <span id="langLabel">English</span>
+        </button>
+
+        <!-- قسم الصورة الشخصية والعنوان -->
+        <div class="profile">
+            <img src="github-profile.jpg" alt="Profile" class="profile-img">
+            <h1 id="name">Hatimation</h1>
+            <p id="bio">صانع محتوى | مرحباً بكم في صفحتي 🚀</p>
+        </div>
+
+        <!-- زر فتح وغلق القوائم -->
+        <button class="toggle-btn" id="toggleBtn">
+            <span id="btnText">عرض الحسابات والقنوات</span>
+            <i class="fa-solid fa-chevron-down" id="arrowIcon"></i>
+        </button>
+
+        <!-- قائمة الحسابات والروابط -->
+        <div class="links-container" id="linksContainer">
+            
+            <!-- YouTube -->
+            <a href="https://youtube.com/@Hatimation" target="_blank" class="link-card youtube">
+                <div class="link-info">
+                    <i class="fa-brands fa-youtube"></i>
+                    <span id="ytText">قناة اليوتيوب</span>
+                </div>
+                <i class="fa-solid fa-arrow-left arrow-link"></i>
+            </a>
+
+            <!-- TikTok -->
+            <a href="https://tiktok.com/@hatiimation" target="_blank" class="link-card tiktok">
+                <div class="link-info">
+                    <i class="fa-brands fa-tiktok"></i>
+                    <span id="ttText">حساب التيك توك</span>
+                </div>
+                <i class="fa-solid fa-arrow-left arrow-link"></i>
+            </a>
+
+            <!-- Instagram -->
+            <a href="https://instagram.com/Hatiimation" target="_blank" class="link-card instagram">
+                <div class="link-info">
+                    <i class="fa-brands fa-instagram"></i>
+                    <span id="igText">إنستغرام</span>
+                </div>
+                <i class="fa-solid fa-arrow-left arrow-link"></i>
+            </a>
+
+            <!-- Discord -->
+            <a href="https://discord.gg/eMHQH24pB" target="_blank" class="link-card discord">
+                <div class="link-info">
+                    <i class="fa-brands fa-discord"></i>
+                    <span id="dcText">سيرفر الديسكورد</span>
+                </div>
+                <i class="fa-solid fa-arrow-left arrow-link"></i>
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        const toggleBtn = document.getElementById('toggleBtn');
+        const linksContainer = document.getElementById('linksContainer');
+        const arrowIcon = document.getElementById('arrowIcon');
+        const langBtn = document.getElementById('langBtn');
+
+        // النصوص باللغتين
+        const translations = {
+            ar: {
+                dir: 'rtl',
+                langLabel: 'English',
+                name: 'حاتميشن',
+                bio: 'صانع محتوى | مرحبا بكم في صفحتي 🚀',
+                btnText: 'عرض الحسابات والقنوات',
+                btnTextClose: 'إخفاء الحسابات',
+                ytText: 'قناة اليوتيوب',
+                ttText: 'حساب التيك توك',
+                igText: 'إنستغرام',
+                dcText: 'سيرفر الديسكورد'
+            },
+            en: {
+                dir: 'ltr',
+                langLabel: 'عربي',
+                name: 'Hatimation',
+                bio: 'Content Creator | Welcome to my page 🚀',
+                btnText: 'Show Social Media',
+                btnTextClose: 'Hide Social Media',
+                ytText: 'YouTube Channel',
+                ttText: 'TikTok Account',
+                igText: 'Instagram',
+                dcText: 'Discord Server'
+            }
+        };
+
+        let currentLang = 'ar';
+
+        // أنيميشن فتح/إغلاق القائمة
+        toggleBtn.addEventListener('click', () => {
+            linksContainer.classList.toggle('active');
+            const isOpen = linksContainer.classList.contains('active');
+            
+            arrowIcon.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+            
+            const btnTextSpan = document.getElementById('btnText');
+            btnTextSpan.textContent = isOpen 
+                ? translations[currentLang].btnTextClose 
+                : translations[currentLang].btnText;
+        });
+
+        // تحويل اللغة
+        langBtn.addEventListener('click', () => {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            const t = translations[currentLang];
+
+            document.documentElement.setAttribute('dir', t.dir);
+            document.documentElement.setAttribute('lang', currentLang);
+
+            document.getElementById('langLabel').textContent = t.langLabel;
+            document.getElementById('name').textContent = t.name;
+            document.getElementById('bio').textContent = t.bio;
+            
+            const isOpen = linksContainer.classList.contains('active');
+            document.getElementById('btnText').textContent = isOpen ? t.btnTextClose : t.btnText;
+
+            document.getElementById('ytText').textContent = t.ytText;
+            document.getElementById('ttText').textContent = t.ttText;
+            document.getElementById('igText').textContent = t.igText;
+            document.getElementById('dcText').textContent = t.dcText;
+        });
+    </script>
+</body>
+</html>
